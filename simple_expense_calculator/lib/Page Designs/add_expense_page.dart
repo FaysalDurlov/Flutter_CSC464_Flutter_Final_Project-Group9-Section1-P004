@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_expense_calculator/Page%20Designs/home_page.dart';
 
 
 class AddExpensePage extends StatefulWidget {
@@ -30,71 +31,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Container(
-        color: Color.fromARGB(255, 231, 236, 242),
-        height: 100,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Color.fromARGB(255, 100, 101, 105),
-                backgroundColor: Color.fromARGB(255, 231, 236, 242),
-                shadowColor: Colors.transparent,
-              ),
-              onPressed: () {
-                print("Home button pressed");
-              }, 
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.home_sharp, size: 24),
-                  SizedBox(height: 4),
-                  Text('Home'),
-                ],
-              )
-            ),
-            ElevatedButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 231, 236, 242),
-                shadowColor: Colors.transparent,
-                foregroundColor: Color.fromARGB(255, 100, 101, 105),
-              ),
-              onPressed: () {
-                print("Statistics button pressed");
-              }, 
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add_circle_outline_outlined, size: 24),
-                  SizedBox(height: 4),
-                  Text('Add'),
-                ],
-              )
-            ),
-            ElevatedButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Color.fromARGB(255, 100, 101, 105),
-                backgroundColor: Color.fromARGB(255, 231, 236, 242),
-                shadowColor: Colors.transparent,
-              ),
-              onPressed: () {
-                print("Analytics button pressed");
-              }, 
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.analytics_outlined, size: 24),
-                  SizedBox(height: 4),
-                  Text('Analytics'),
-                ],
-              )
-            ),
-          ],
-        ),
-        ),
-
-
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 189, 216, 245),
           shadowColor: Colors.black,
@@ -332,6 +268,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
 
             ],
           )
-        );
+    );
   }
 }
