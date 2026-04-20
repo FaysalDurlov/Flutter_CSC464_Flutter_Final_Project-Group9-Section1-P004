@@ -5,9 +5,7 @@ class ExpenseDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Expense Details")),
-      body: Center(
-        child: Text("Details Page"),
-      ),
+      body: Center(child: Text("Details Page")),
     );
   }
 }
