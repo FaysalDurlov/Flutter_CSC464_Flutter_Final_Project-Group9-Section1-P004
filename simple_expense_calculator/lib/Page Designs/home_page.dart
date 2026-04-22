@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_expense_calculator/Page%20Designs/DetailsPage.dart';
 
-
-
 class HomePageView extends StatefulWidget {
   const HomePageView({super.key});
 
@@ -11,26 +9,24 @@ class HomePageView extends StatefulWidget {
 }
 
 class _HomePageViewState extends State<HomePageView> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 189, 216, 245),
-          centerTitle: true,
-          title: Text('Simple Expense Calculator',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 22,
-              fontWeight: FontWeight.w500
-            ),
+        backgroundColor: Color.fromARGB(255, 189, 216, 245),
+        centerTitle: true,
+        title: Text(
+          'Simple Expense Calculator',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 22,
+            fontWeight: FontWeight.w500,
           ),
         ),
-      
+      ),
 
       body: Column(
         children: [
-          
           //Top Header
           Container(
             width: double.infinity,
@@ -106,27 +102,22 @@ class _HomePageViewState extends State<HomePageView> {
         ],
       ),
 
-      floatingActionButton:FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton.extended(
         foregroundColor: Colors.white,
-          backgroundColor: Color.fromARGB(255, 30, 109, 170),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(60),
-          ),
-          onPressed: () {
-            print("Add Expense button pressed");
-          },
-          tooltip: 'Add Expense',
-          icon: Icon(Icons.add),
-          label: const Text('Add Expense', 
-            style: TextStyle(fontSize: 17, 
-                    fontWeight: FontWeight.w500
-            ),
+        backgroundColor: Color.fromARGB(255, 30, 109, 170),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(60)),
+        onPressed: () {
+          print("Add Expense button pressed");
+        },
+        tooltip: 'Add Expense',
+        icon: Icon(Icons.add),
+        label: const Text(
+          'Add Expense',
+          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
         ),
       ),
     );
   }
-
-
 
   Widget iconButton(IconData icon) {
     return Container(
@@ -140,17 +131,13 @@ class _HomePageViewState extends State<HomePageView> {
     );
   }
 
-
   Widget expenseItem(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Dismissible(
         key: UniqueKey(),
-        direction: DismissDirection.endToStart, // the Swipe Direction (Right to Left)
-
-
-
-
+        direction:
+            DismissDirection.endToStart, // the Swipe Direction (Right to Left)
         // Delete Background RED
         background: Container(
           padding: EdgeInsets.only(right: 20),
@@ -185,7 +172,7 @@ class _HomePageViewState extends State<HomePageView> {
                   color: Colors.black12,
                   blurRadius: 5,
                   offset: Offset(0, 2),
-                )
+                ),
               ],
             ),
             child: Row(
@@ -207,10 +194,11 @@ class _HomePageViewState extends State<HomePageView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Lunch @ Cafe",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text("15 Oct 2023",
-                          style: TextStyle(color: Colors.grey)),
+                      Text(
+                        "Lunch @ Cafe",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text("15 Oct 2023", style: TextStyle(color: Colors.grey)),
                     ],
                   ),
                 ),
@@ -230,5 +218,5 @@ class _HomePageViewState extends State<HomePageView> {
       ),
     );
   }
-
 }
+//Home_page_created
