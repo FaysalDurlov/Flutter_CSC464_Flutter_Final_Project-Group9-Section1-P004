@@ -26,6 +26,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,10 +163,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 DropdownMenuItem(value: "Dining", child: Text("Dining")),
                 DropdownMenuItem(value: "Transport", child: Text("Transport")),
                 DropdownMenuItem(value: "Groceries", child: Text("Groceries")),
-                DropdownMenuItem(
-                  value: "Entertainment",
-                  child: Text("Entertainment"),
-                ),
+                DropdownMenuItem(value: "Entertainment", child: Text("Entertainment")),
               ],
               onChanged: (value) {
                 print("Selected category: $value");

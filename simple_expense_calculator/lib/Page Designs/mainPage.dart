@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_expense_calculator/Page%20Designs/add_expense_page.dart';
+import 'package:simple_expense_calculator/Page%20Designs/analyticsPage.dart';
 import 'package:simple_expense_calculator/Page%20Designs/home_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> pages = [
     HomePageView(),
     AddExpensePage(),
-    Text("Analytics Page"), // placeholder
+    AnalyticsPage(), // placeholder
   ];
 
   @override
