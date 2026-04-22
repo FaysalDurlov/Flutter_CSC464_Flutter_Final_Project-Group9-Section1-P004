@@ -19,14 +19,15 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  final List<Widget> pages = [
-    HomePageView(),
-    AddExpensePage(),
-    AnalyticsPage(), // placeholder
-  ];
+  
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> pages = [
+      HomePageView(changeTab: changeTab),
+      AddExpensePage(changeTab: changeTab),
+      AnalyticsPage(), // placeholder
+    ];
     return Scaffold(
       body: pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(

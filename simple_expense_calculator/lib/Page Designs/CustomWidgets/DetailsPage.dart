@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-class AddExpensePage extends StatefulWidget {
+class ExpenseDetailsPage extends StatefulWidget {
+
   final Function(int) changeTab;
-  const AddExpensePage({required this.changeTab, super.key});
+  const ExpenseDetailsPage({required this.changeTab, super.key});
 
   @override
-  State<AddExpensePage> createState() => _AddExpensePageState();
+  State<ExpenseDetailsPage> createState() => _ExpenseDetailsPageState();
 }
 
-class _AddExpensePageState extends State<AddExpensePage> {
+class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
+
   DateTime? selectedDate;
 
   Future<void> pickDate() async {
@@ -26,39 +28,27 @@ class _AddExpensePageState extends State<AddExpensePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 189, 216, 245),
-        shadowColor: Colors.black,
-        elevation: 4,
-        centerTitle: true,
+      appBar: AppBar(title: Text("Edit Activity Details"),
+      centerTitle: true,
         leading: IconButton(
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            print("back button pressed");
-            widget.changeTab(0);
+            Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 24),
-        ),
-        title: Text(
-          'Add Expense',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontWeight: FontWeight.w500,
-          ),
         ),
       ),
-
 
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 20),
             const Text(
                   'Activity Name',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -188,9 +178,10 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   ElevatedButton(
                     onPressed: () {
                       print("Cancel button pressed");
-                      widget.changeTab(0);
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 222, 80, 104),
                       elevation: 5,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -199,7 +190,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     child: Text(
                       'Cancel',
                       style: TextStyle(
-                        color: Color.fromARGB(255, 30, 109, 170),
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                       ),
@@ -208,7 +199,13 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   ElevatedButton(
                     onPressed: () {
                       print("Save button pressed");
-                      widget.changeTab(0);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Edited successfully"),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 30, 109, 170),
@@ -218,7 +215,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       ),
                     ),
                     child: Text(
-                      'Save Expense',
+                      'Save Changes',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,

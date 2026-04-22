@@ -1,14 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:simple_expense_calculator/Page%20Designs/DetailsPage.dart';
+import 'package:simple_expense_calculator/Page%20Designs/CustomWidgets/DetailsPage.dart';
 
 class HomePageView extends StatefulWidget {
-  const HomePageView({super.key});
+
+  final Function(int) changeTab;
+  const HomePageView({required this.changeTab, super.key});
+
 
   @override
   State<HomePageView> createState() => _HomePageViewState();
 }
 
 class _HomePageViewState extends State<HomePageView> {
+
+  void _showFilterDialog(BuildContext context , {required List<String> itemLists}) {
+    final categories = itemLists;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: EdgeInsets.symmetric(horizontal: 40),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(categories[index]),
+                onTap: () {
+                  Navigator.pop(context);
+                  print("Selected: ${categories[index]}");
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,9 +117,39 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
                 ),
                 SizedBox(width: 10),
-                iconButton(Icons.filter_list),
+                InkWell(
+                  onTap: (){
+                    print("Filter By Category");
+                    _showFilterDialog(context, 
+                    itemLists: ["Bills", "Dining", "Transport", "Groceries", "Entertainment"]);
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF4F6FB),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Icon(Icons.filter_list, color: Colors.grey),
+                  ),
+                ),
                 SizedBox(width: 10),
-                iconButton(Icons.swap_vert),
+                InkWell(
+                  onTap: () {
+                    print("Filter By Date and Amount");
+                    _showFilterDialog(context, 
+                    itemLists: ["By Date (Oldest to Newest)", "By Date (Newest to Oldest)", "By Amount (Low to High)", "By Amount (High to Low)"]);
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF4F6FB),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Icon(Icons.swap_vert, color: Colors.grey),
+                  ),
+                ),
               ],
             ),
           ),
@@ -108,6 +172,7 @@ class _HomePageViewState extends State<HomePageView> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(60)),
         onPressed: () {
           print("Add Expense button pressed");
+          widget.changeTab(1);
         },
         tooltip: 'Add Expense',
         icon: Icon(Icons.add),
@@ -116,18 +181,6 @@ class _HomePageViewState extends State<HomePageView> {
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
         ),
       ),
-    );
-  }
-
-  Widget iconButton(IconData icon) {
-    return Container(
-      height: 50,
-      width: 50,
-      decoration: BoxDecoration(
-        color: Color(0xFFF4F6FB),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Icon(icon, color: Colors.grey),
     );
   }
 
@@ -157,7 +210,7 @@ class _HomePageViewState extends State<HomePageView> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => ExpenseDetailsPage()),
+              MaterialPageRoute(builder: (_) => ExpenseDetailsPage(changeTab: widget.changeTab)),
             );
           },
 

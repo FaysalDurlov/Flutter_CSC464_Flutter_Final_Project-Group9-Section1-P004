@@ -79,6 +79,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                       ),
                   ),
                   Spacer(),
+                  
                   ElevatedButton(
                     onPressed: () => _showCategoryDialog(context),
                     style: ElevatedButton.styleFrom(
