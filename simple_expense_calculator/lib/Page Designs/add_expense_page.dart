@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_expense_calculator/modelClass/ActivityModelClass.dart';
 
 class AddExpensePage extends StatefulWidget {
   final Function(int) changeTab;
@@ -9,7 +10,17 @@ class AddExpensePage extends StatefulWidget {
 }
 
 class _AddExpensePageState extends State<AddExpensePage> {
+
+
+  TextEditingController activityNameController = TextEditingController();
+  TextEditingController activityAmountController = TextEditingController();
   DateTime? selectedDate;
+  String? selectedCategory;
+  TextEditingController activityDescriptionController = TextEditingController();
+
+
+
+
 
   Future<void> pickDate() async {
     DateTime? picked = await showDatePicker(
@@ -65,6 +76,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 ),
         
             TextField(
+                controller: activityNameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Enter Activity Name',
@@ -83,6 +95,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
             SizedBox(height: 2),
             Container(
               child: TextField(
+                controller: activityAmountController,
                 decoration: InputDecoration(
                   prefixText: '৳ ',
                   suffixText: "BDT",
@@ -148,6 +161,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   DropdownMenuItem(value: "Entertainment", child: Text("Entertainment")),
                 ],
                 onChanged: (value) {
+                  selectedCategory = value;
                   print("Selected category: $value");
                 },
                 decoration: InputDecoration(
@@ -170,6 +184,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
             SizedBox(height: 2),
             Container(
               child: TextField(
+                controller: activityDescriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -208,6 +223,15 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   ElevatedButton(
                     onPressed: () {
                       print("Save button pressed");
+                      ActivityModelClass newActivity = ActivityModelClass(
+                        name: activityNameController.text,
+                        amount: activityAmountController.text,
+                        category: selectedCategory ?? "Uncategorized",
+                        description: activityDescriptionController.text,
+                        date: selectedDate ?? DateTime.now(),
+                        createdAt: DateTime.now(),
+                      );
+                      print(newActivity.toJson());
                       widget.changeTab(0);
                     },
                     style: ElevatedButton.styleFrom(
