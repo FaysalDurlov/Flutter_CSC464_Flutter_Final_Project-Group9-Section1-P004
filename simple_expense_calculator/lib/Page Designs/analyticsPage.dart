@@ -139,7 +139,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               SizedBox(
                                 child: Row(
                                   children: [
-                                    Container(width: 14, height: 14, color: Colors.orange),
+                                    Container(width: 14, height: 14, color: Colors.red),
                                     SizedBox(width: 8),
                                     Text("Transport", style: TextStyle(fontSize: 16)),
                                   ],
@@ -148,7 +148,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               SizedBox(
                                 child: Row(
                                   children: [
-                                    Container(width: 14, height: 14, color: Colors.red),
+                                    Container(width: 14, height: 14, color: Colors.orange),
                                     SizedBox(width: 8),
                                     Text("Entertainment", style: TextStyle(fontSize: 16)),
                                   ],
@@ -197,21 +197,6 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         ),
       ),
     );
-  }
-}
-
-
-class CategoryConfig {
-  static Map<String, dynamic> categoryIcons = {
-    "Dining": ColoredIcon.burger(size: 25),
-    "Groceries": ColoredIcon.shoppingCart1(size: 25),
-    "Transport": ColoredIcon.carTaxi(size: 25),
-    "Entertainment": ColoredIcon.filmRoll1(size: 25),
-    "Bills": ColoredIcon.wallet(size: 25),
-  };
-
-  static dynamic getIcon(String category) {
-    return categoryIcons[category];
   }
 }
 

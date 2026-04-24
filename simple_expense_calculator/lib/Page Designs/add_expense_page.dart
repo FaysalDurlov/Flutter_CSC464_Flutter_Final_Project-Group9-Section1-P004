@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_expense_calculator/modelClass/ActivityModelClass.dart';
+import 'package:simple_expense_calculator/utility/CustomStaticUtilityFnc.dart';
 import 'package:simple_expense_calculator/utility/activityManagementProvidor.dart';
 
 class AddExpensePage extends StatefulWidget {
@@ -21,6 +22,37 @@ class _AddExpensePageState extends State<AddExpensePage> {
   String? selectedCategory;
   TextEditingController activityDescriptionController = TextEditingController();
   late bool status;
+
+
+
+  String? validateForm() {
+    if (activityNameController.text.trim().isEmpty) {
+      return "Activity Name is required";
+    }
+
+    if (activityAmountController.text.trim().isEmpty) {
+      return "Amount is required";
+    }
+
+    final amount = double.tryParse(activityAmountController.text.trim());
+
+    if (amount == null) {
+      return "Amount must be a valid number";
+    }
+    if (amount <= 0) {
+      return "Amount must be greater than 0";
+    }
+
+    if (selectedDate == null) {
+      return "Please select a date";
+    }
+
+    if (selectedCategory == null || selectedCategory!.isEmpty) {
+      return "Please select a category";
+    }
+
+    return null;
+  }
 
 
 
@@ -232,13 +264,32 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
+
+                      String? error = CustomUtilityfucntion.validateActivityForm(
+                        name: activityNameController.text,
+                        amount: activityAmountController.text,
+                        date: selectedDate,
+                        category: selectedCategory,
+                      );
+
+                      if (error != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(error),
+                          ),
+                        );
+                        return;
+                      }
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           backgroundColor: Colors.green[300],
                           content: Text("Expense Added Successfully!"),
-                          duration: Duration(seconds: 2),
+                          duration: Duration(seconds: 3),
                         ),
                       );
+
                       ActivityModelClass newActivity = ActivityModelClass(
                         id: DateTime.now().millisecondsSinceEpoch.toString(),
                         name: activityNameController.text,
@@ -250,7 +301,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       );
 
                       final provider = context.read<ActivityManagementProvider>();
-                      bool status = await provider.addActivityToFirebase(newActivity);
+                      await provider.addActivityToFirebase(newActivity);
+
                       widget.changeTab(0);
                     },
                     style: ElevatedButton.styleFrom(

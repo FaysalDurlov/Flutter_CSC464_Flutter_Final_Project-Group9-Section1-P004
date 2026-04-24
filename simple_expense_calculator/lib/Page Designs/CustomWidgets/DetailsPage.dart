@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_expense_calculator/modelClass/ActivityModelClass.dart';
+import 'package:simple_expense_calculator/utility/CustomStaticUtilityFnc.dart';
 import 'package:simple_expense_calculator/utility/activityManagementProvidor.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
@@ -235,6 +236,24 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                   ),
                   ElevatedButton(
                     onPressed: () async{
+
+                      String? error = CustomUtilityfucntion.validateActivityForm(
+                        name: activityNameController.text,
+                        amount: activityAmountController.text,
+                        date: selectedDate,
+                        category: selectedCategory,
+                      );
+
+                      if (error != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(error),
+                          ),
+                        );
+                        return;
+                      }
+
                        final provider = context.read<ActivityManagementProvider>();
 
                       print("Save button pressed");

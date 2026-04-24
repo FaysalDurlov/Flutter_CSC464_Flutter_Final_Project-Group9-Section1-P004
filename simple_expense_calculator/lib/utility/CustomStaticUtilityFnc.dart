@@ -1,3 +1,4 @@
+import 'package:my_icon_package/my_icon_package.dart';
 import 'package:simple_expense_calculator/modelClass/ActivityModelClass.dart';
 
 class CustomUtilityfucntion {
@@ -51,7 +52,7 @@ class CustomUtilityfucntion {
   static List<ActivityModelClass> sortActivities(List<ActivityModelClass> list, String sortType) {
 
     List<ActivityModelClass> sortedList = List.from(list);
-    
+
     switch (sortType) {
       case "By Date (Oldest to Newest)":
         sortedList.sort((a, b) => a.date.compareTo(b.date));
@@ -75,4 +76,48 @@ class CustomUtilityfucntion {
     return sortedList;
   }
 
+  static String? validateActivityForm({required String name, required String amount, required DateTime? date, required String? category,}) {
+    if (name.trim().isEmpty) {
+      return "Activity Name is required";
+    }
+
+    if (amount.trim().isEmpty) {
+      return "Amount is required";
+    }
+
+    final parsedAmount = double.tryParse(amount.trim());
+    if (parsedAmount == null) {
+      return "Amount must be a valid number";
+    }
+
+    if (parsedAmount <= 0) {
+      return "Amount must be greater than 0";
+    }
+
+    if (date == null) {
+      return "Please select a date";
+    }
+
+    if (category == null || category.isEmpty) {
+      return "Please select a category";
+    }
+
+    return null;
+  }
+
+
+}
+
+class CategoryConfig {
+  static Map<String, dynamic> categoryIcons = {
+    "Dining": ColoredIcon.burger(size: 25),
+    "Groceries": ColoredIcon.shoppingCart1(size: 25),
+    "Transport": ColoredIcon.carTaxi(size: 25),
+    "Entertainment": ColoredIcon.filmRoll1(size: 25),
+    "Bills": ColoredIcon.wallet(size: 25),
+  };
+
+  static dynamic getIcon(String category) {
+    return categoryIcons[category];
+  }
 }

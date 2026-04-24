@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_icon_package/my_icon_package.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_expense_calculator/Page Designs/CustomWidgets/DetailsPage.dart';
 import 'package:intl/intl.dart';
@@ -96,7 +97,7 @@ class _HomePageViewState extends State<HomePageView> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 189, 216, 245),
+        backgroundColor: Color.fromARGB(255, 189, 216, 245),
         centerTitle: true,
         title: const Text(
           'Simple Expense Calculator',
@@ -192,7 +193,7 @@ class _HomePageViewState extends State<HomePageView> {
               padding: const EdgeInsets.only(bottom: 80),
               itemCount: filteredList.length,
               itemBuilder: (context, index) {
-                return expenseItem(context, activity: filteredList[index]);
+                return expenseItem(context, activity: filteredList[index] , icon: CategoryConfig.getIcon(filteredList[index].category));
               },
             ),
           ),
@@ -216,7 +217,7 @@ class _HomePageViewState extends State<HomePageView> {
     );
   }
 
-  Widget expenseItem(BuildContext context, {required ActivityModelClass activity}) {
+  Widget expenseItem(BuildContext context, {required ColoredIcon icon, required ActivityModelClass activity}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Dismissible(
@@ -264,10 +265,9 @@ class _HomePageViewState extends State<HomePageView> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.orange.shade100,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.fastfood, color: Colors.orange),
+                  child: icon,
                 ),
 
                 const SizedBox(width: 15),
