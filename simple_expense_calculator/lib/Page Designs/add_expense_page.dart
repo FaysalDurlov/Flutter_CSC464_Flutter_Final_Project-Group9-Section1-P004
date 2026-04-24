@@ -232,9 +232,13 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      
-                      print("Save button pressed");
-
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.green[300],
+                          content: Text("Expense Added Successfully!"),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
                       ActivityModelClass newActivity = ActivityModelClass(
                         id: DateTime.now().millisecondsSinceEpoch.toString(),
                         name: activityNameController.text,
@@ -245,14 +249,9 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         createdAt: DateTime.now(),
                       );
 
-                      print("Before calling provider");
-
                       final provider = context.read<ActivityManagementProvider>();
-
                       bool status = await provider.addActivityToFirebase(newActivity);
-
-                      print("AFTER CALL: $status");
-
+                      widget.changeTab(0);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 30, 109, 170),

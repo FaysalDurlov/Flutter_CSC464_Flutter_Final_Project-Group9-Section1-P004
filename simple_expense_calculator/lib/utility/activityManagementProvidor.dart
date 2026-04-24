@@ -7,7 +7,7 @@ class ActivityManagementProvider with ChangeNotifier{
 
   final FirebaseCrudUtilityFunctions repo = FirebaseCrudUtilityFunctions();
 
-  Future<void> loadTasksFromFirebase() async {
+  Future<void> loadActivitiesFromFirebase() async {
     firebaseFetchedActivities = await repo.getAllActivity();
     notifyListeners();
   }
@@ -18,15 +18,15 @@ class ActivityManagementProvider with ChangeNotifier{
     return result;
   }
 
-  Future<bool> updateTask(ActivityModelClass activity) async {
+  Future<bool> updateActivity(ActivityModelClass activity) async {
     bool result = await repo.updateActivityRecord(activity.id, activity.toJson());
-    await loadTasksFromFirebase();
+    await loadActivitiesFromFirebase();
     return result;
   }
 
-  Future<bool> deleteTask(String id) async {
+  Future<bool> deleteActivity(String id) async {
     bool result = await repo.deleteActivityRecord(id);
-    await loadTasksFromFirebase();
+    await loadActivitiesFromFirebase();
     return result;
   }
 

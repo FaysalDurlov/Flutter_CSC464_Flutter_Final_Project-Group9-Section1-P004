@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_expense_calculator/modelClass/ActivityModelClass.dart';
+import 'package:simple_expense_calculator/utility/activityManagementProvidor.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
 
   final Function(int) changeTab;
-  const ExpenseDetailsPage({required this.changeTab, super.key});
+  final ActivityModelClass activity;
+  const ExpenseDetailsPage({required this.activity, required this.changeTab, super.key});
 
   @override
   State<ExpenseDetailsPage> createState() => _ExpenseDetailsPageState();
@@ -11,7 +15,12 @@ class ExpenseDetailsPage extends StatefulWidget {
 
 class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
 
+  TextEditingController activityNameController = TextEditingController();
+  TextEditingController activityAmountController = TextEditingController();
   DateTime? selectedDate;
+  String? selectedCategory;
+  TextEditingController activityDescriptionController = TextEditingController();
+
 
   Future<void> pickDate() async {
     DateTime? picked = await showDatePicker(
@@ -27,6 +36,27 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
       });
     }
   }
+
+  void fillData(ActivityModelClass activity) {
+    activityNameController.text = activity.name;
+    activityAmountController.text = activity.amount;
+    activityDescriptionController.text = activity.description;
+
+    setState(() {
+      selectedDate = activity.date;
+      selectedCategory = activity.category;
+    });
+    
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fillData(widget.activity);
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +85,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                 ),
         
             TextField(
+                controller: activityNameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Enter Activity Name',
@@ -73,6 +104,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
             SizedBox(height: 2),
             Container(
               child: TextField(
+                controller: activityAmountController,
                 decoration: InputDecoration(
                   prefixText: '৳ ',
                   suffixText: "BDT",
@@ -130,6 +162,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
             SizedBox(height: 2),
             Container(
               child: DropdownButtonFormField<String>(
+                value: selectedCategory,
                 items: [
                   DropdownMenuItem(value: "Bills", child: Text("Bills")),
                   DropdownMenuItem(value: "Dining", child: Text("Dining")),
@@ -138,6 +171,9 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                   DropdownMenuItem(value: "Entertainment", child: Text("Entertainment")),
                 ],
                 onChanged: (value) {
+                  setState(() {
+                    selectedCategory = value;
+                  });
                   print("Selected category: $value");
                 },
                 decoration: InputDecoration(
@@ -160,6 +196,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
             SizedBox(height: 2),
             Container(
               child: TextField(
+                controller: activityDescriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -197,8 +234,21 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async{
+                       final provider = context.read<ActivityManagementProvider>();
+
                       print("Save button pressed");
+                      ActivityModelClass editedActivity = ActivityModelClass(
+                        id: widget.activity?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+                        name: activityNameController.text,
+                        amount: double.parse(activityAmountController.text).toStringAsFixed(2),
+                        category: selectedCategory ?? "Uncategorized",
+                        description: activityDescriptionController.text,
+                        date: selectedDate ?? DateTime.now(),
+                        createdAt: DateTime.now(),
+                      );
+                      bool result = await provider.updateActivity(editedActivity);
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("Edited successfully"),
