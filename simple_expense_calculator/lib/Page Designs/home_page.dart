@@ -16,11 +16,22 @@ class HomePageView extends StatefulWidget {
 }
 
 class _HomePageViewState extends State<HomePageView> {
-  final ScrollController _scrollController = ScrollController();
 
   String selectedCategory = "";
   String selectedSort = "";
   String searchQuery = "";
+
+  bool get isFilterActive {
+    return selectedCategory.isNotEmpty || selectedSort.isNotEmpty || searchQuery.isNotEmpty;
+  }
+
+  void resetFilters() {
+    setState(() {
+      selectedCategory = "";
+      selectedSort = "";
+      searchQuery = "";
+    });
+  }
 
 
   void _showFilterDialog(BuildContext context, {required List<String> itemLists, required String type}) {
@@ -93,10 +104,12 @@ class _HomePageViewState extends State<HomePageView> {
     filteredList = CustomUtilityfucntion.filterByCategory(filteredList, selectedCategory);
     filteredList = CustomUtilityfucntion.searchByName(filteredList, searchQuery);
     filteredList = CustomUtilityfucntion.sortActivities(filteredList, selectedSort);
+    
 
 
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Color.fromARGB(255, 189, 216, 245),
         centerTitle: true,
         title: const Text(
@@ -107,11 +120,19 @@ class _HomePageViewState extends State<HomePageView> {
             fontWeight: FontWeight.w500,
           ),
         ),
+        actions: [
+          if (isFilterActive)
+            IconButton(
+              icon: const Icon(Icons.refresh, color: Colors.black),
+              onPressed: resetFilters,
+            ),
+        ],
       ),
 
       body: Column(
         children: [
-          // HEADER
+
+          // header
           Container(
             width: double.infinity,
             padding: const EdgeInsets.only(top: 20, bottom: 30),
@@ -141,7 +162,7 @@ class _HomePageViewState extends State<HomePageView> {
             ),
           ),
 
-          // SEARCH + FILTERS
+          // search and filter
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
@@ -187,7 +208,8 @@ class _HomePageViewState extends State<HomePageView> {
               ],
             ),
           ),
-          // LIST
+
+          // lsit to create entries
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.only(bottom: 80),

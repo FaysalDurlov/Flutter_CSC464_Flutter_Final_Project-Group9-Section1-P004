@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final activityModelClass = activityModelClassFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,7 +7,7 @@ ActivityModelClass activityModelClassFromJson(String str) => ActivityModelClass.
 String activityModelClassToJson(ActivityModelClass data) => json.encode(data.toJson());
 
 class ActivityModelClass {
-    String id; // Add an 'id' field to hold the Firestore document ID
+    String id; 
     String name;
     String amount;
     String category;
@@ -20,7 +16,7 @@ class ActivityModelClass {
     DateTime createdAt;
 
     ActivityModelClass({
-        required this.id, // Make 'id' a required parameter in the constructor
+        required this.id, 
         required this.name,
         required this.amount,
         required this.category,

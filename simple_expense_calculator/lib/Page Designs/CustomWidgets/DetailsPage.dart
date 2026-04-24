@@ -125,7 +125,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
             SizedBox(height: 2),
             Container(
               child: InkWell(
-                // here the inkwell can make any widgets clickable thats it
                 onTap: pickDate,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
