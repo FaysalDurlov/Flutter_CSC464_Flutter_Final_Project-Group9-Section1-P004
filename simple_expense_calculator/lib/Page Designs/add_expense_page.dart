@@ -20,6 +20,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
   DateTime? selectedDate;
   String? selectedCategory;
   TextEditingController activityDescriptionController = TextEditingController();
+  late bool status;
 
 
 
@@ -230,8 +231,10 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      
                       print("Save button pressed");
+
                       ActivityModelClass newActivity = ActivityModelClass(
                         id: DateTime.now().millisecondsSinceEpoch.toString(),
                         name: activityNameController.text,
@@ -242,11 +245,14 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         createdAt: DateTime.now(),
                       );
 
+                      print("Before calling provider");
 
+                      final provider = context.read<ActivityManagementProvider>();
 
+                      bool status = await provider.addActivityToFirebase(newActivity);
 
-                      print(newActivity.toJson());
-                      // widget.changeTab(0);
+                      print("AFTER CALL: $status");
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 30, 109, 170),
