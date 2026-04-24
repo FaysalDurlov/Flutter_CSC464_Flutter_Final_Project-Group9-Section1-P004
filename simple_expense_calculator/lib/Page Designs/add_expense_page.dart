@@ -224,6 +224,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     onPressed: () {
                       print("Save button pressed");
                       ActivityModelClass newActivity = ActivityModelClass(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
                         name: activityNameController.text,
                         amount: activityAmountController.text,
                         category: selectedCategory ?? "Uncategorized",

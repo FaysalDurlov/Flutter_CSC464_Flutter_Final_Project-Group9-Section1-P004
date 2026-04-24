@@ -6,11 +6,12 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-ActivityModelClass activityModelClassFromJson(String str) => ActivityModelClass.fromJson(json.decode(str));
+ActivityModelClass activityModelClassFromJson(String str) => ActivityModelClass.fromJson(json.decode(str),"");
 
 String activityModelClassToJson(ActivityModelClass data) => json.encode(data.toJson());
 
 class ActivityModelClass {
+    String id; // Add an 'id' field to hold the Firestore document ID
     String name;
     String amount;
     String category;
@@ -19,6 +20,7 @@ class ActivityModelClass {
     DateTime createdAt;
 
     ActivityModelClass({
+        required this.id, // Make 'id' a required parameter in the constructor
         required this.name,
         required this.amount,
         required this.category,
@@ -27,7 +29,8 @@ class ActivityModelClass {
         required this.createdAt,
     });
 
-    factory ActivityModelClass.fromJson(Map<String, dynamic> json) => ActivityModelClass(
+    factory ActivityModelClass.fromJson(Map<String, dynamic> json, String id) => ActivityModelClass(
+        id: id,
         name: json["name"],
         amount: json["amount"],
         category: json["category"],
