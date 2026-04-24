@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_expense_calculator/modelClass/ActivityModelClass.dart';
+import 'package:simple_expense_calculator/utility/CustomStaticUtilityFnc.dart';
+import 'package:simple_expense_calculator/utility/activityManagementProvidor.dart';
 
 class AddExpensePage extends StatefulWidget {
   final Function(int) changeTab;
@@ -9,7 +13,56 @@ class AddExpensePage extends StatefulWidget {
 }
 
 class _AddExpensePageState extends State<AddExpensePage> {
+
+  late ActivityManagementProvider activityProvider;
+
+  TextEditingController activityNameController = TextEditingController();
+  TextEditingController activityAmountController = TextEditingController();
   DateTime? selectedDate;
+  String? selectedCategory;
+  TextEditingController activityDescriptionController = TextEditingController();
+  late bool status;
+
+
+
+  String? validateForm() {
+    if (activityNameController.text.trim().isEmpty) {
+      return "Activity Name is required";
+    }
+
+    if (activityAmountController.text.trim().isEmpty) {
+      return "Amount is required";
+    }
+
+    final amount = double.tryParse(activityAmountController.text.trim());
+
+    if (amount == null) {
+      return "Amount must be a valid number";
+    }
+    if (amount <= 0) {
+      return "Amount must be greater than 0";
+    }
+
+    if (selectedDate == null) {
+      return "Please select a date";
+    }
+
+    if (selectedCategory == null || selectedCategory!.isEmpty) {
+      return "Please select a category";
+    }
+
+    return null;
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    activityProvider = Provider.of<ActivityManagementProvider>(context, listen: false);
+  }
+
 
   Future<void> pickDate() async {
     DateTime? picked = await showDatePicker(
@@ -65,6 +118,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 ),
         
             TextField(
+                controller: activityNameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Enter Activity Name',
@@ -83,6 +137,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
             SizedBox(height: 2),
             Container(
               child: TextField(
+                controller: activityAmountController,
                 decoration: InputDecoration(
                   prefixText: '৳ ',
                   suffixText: "BDT",
@@ -148,6 +203,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   DropdownMenuItem(value: "Entertainment", child: Text("Entertainment")),
                 ],
                 onChanged: (value) {
+                  selectedCategory = value;
                   print("Selected category: $value");
                 },
                 decoration: InputDecoration(
@@ -170,6 +226,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
             SizedBox(height: 2),
             Container(
               child: TextField(
+                controller: activityDescriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -206,8 +263,46 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      print("Save button pressed");
+                    onPressed: () async {
+
+                      String? error = CustomUtilityfucntion.validateActivityForm(
+                        name: activityNameController.text,
+                        amount: activityAmountController.text,
+                        date: selectedDate,
+                        category: selectedCategory,
+                      );
+
+                      if (error != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(error),
+                          ),
+                        );
+                        return;
+                      }
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.green[300],
+                          content: Text("Expense Added Successfully!"),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+
+                      ActivityModelClass newActivity = ActivityModelClass(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        name: activityNameController.text,
+                        amount: activityAmountController.text,
+                        category: selectedCategory ?? "Uncategorized",
+                        description: activityDescriptionController.text,
+                        date: selectedDate ?? DateTime.now(),
+                        createdAt: DateTime.now(),
+                      );
+
+                      final provider = context.read<ActivityManagementProvider>();
+                      await provider.addActivityToFirebase(newActivity);
+
                       widget.changeTab(0);
                     },
                     style: ElevatedButton.styleFrom(

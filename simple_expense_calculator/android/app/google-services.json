@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1056914919857",
+    "project_id": "bonus-project-3da75",
+    "storage_bucket": "bonus-project-3da75.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056914919857:android:baf7ec2350ae8a7712ed90",
+        "android_client_info": {
+          "package_name": "com.example.flutter_ui_class"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVgGHq-bKq1XErqvr6EY8oIN4YN40I9O0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056914919857:android:c048f3334e07b54a12ed90",
+        "android_client_info": {
+          "package_name": "com.example.simple_expense_calculator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVgGHq-bKq1XErqvr6EY8oIN4YN40I9O0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

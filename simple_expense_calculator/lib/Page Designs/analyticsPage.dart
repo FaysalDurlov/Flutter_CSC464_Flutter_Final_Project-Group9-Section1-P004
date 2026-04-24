@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_icon_package/my_icon_package.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_expense_calculator/Page%20Designs/CustomWidgets/analytic_Cat_card.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:simple_expense_calculator/utility/CustomStaticUtilityFnc.dart';
+import 'package:simple_expense_calculator/utility/activityManagementProvidor.dart';
 
 class AnalyticsPage extends StatefulWidget {
   const AnalyticsPage({super.key});
@@ -11,45 +14,14 @@ class AnalyticsPage extends StatefulWidget {
 }
 
 class _AnalyticsPageState extends State<AnalyticsPage> {
-
-  void _showCategoryDialog(BuildContext context) {
-    final categories = [
-      "Today",
-      "Yesterday",
-      "This Week",
-      "This Month",
-      "This Year",
-    ];
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          insetPadding: EdgeInsets.symmetric(horizontal: 40),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(categories[index]),
-                onTap: () {
-                  Navigator.pop(context);
-                  print("Selected: ${categories[index]}");
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-
+  
   @override
   Widget build(BuildContext context) {
+
+    final activityList = context.watch<ActivityManagementProvider>().firebaseFetchedActivities;
+    double totalExpense = CustomUtilityfucntion.getTotalExpense(activityList);
+    final categoryData = CustomUtilityfucntion.getCategoryWiseTotal(activityList);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 189, 216, 245),
@@ -70,45 +42,11 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Row(
-                children: [
-                  Text("October 2024", 
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600,
-                      ),
-                  ),
-                  Spacer(),
-                  
-                  ElevatedButton(
-                    onPressed: () => _showCategoryDialog(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(90, 206, 209, 214),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Text("Filter",style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Icon(Icons.arrow_drop_down_sharp, size: 30),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
               SizedBox(height: 20),
-              const Text("Total Expence: \$1234.56", 
+              Text("Total Expence:  ${totalExpense.toStringAsFixed(2)} ৳ ",
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(height: 20),
@@ -136,30 +74,37 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                 PieChartData(
                                   sections: [
                                     PieChartSectionData(
-                                      value: 40,
+                                      value: CustomUtilityfucntion.calculatePercentage(categoryData["Dining"] ?? 0, totalExpense),
                                       color: Colors.blue,
-                                      title: '40%',
+                                      title: CustomUtilityfucntion.calculatePercentage(categoryData["Dining"] ?? 0, totalExpense).toStringAsFixed(1) + '%',
                                       radius: 60,
                                       titleStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                                     ),
                                     PieChartSectionData(
-                                      value: 30,
+                                      value: CustomUtilityfucntion.calculatePercentage(categoryData["Groceries"] ?? 0, totalExpense),
                                       color: Colors.green,
-                                      title: '30%',
+                                      title: CustomUtilityfucntion.calculatePercentage(categoryData["Groceries"] ?? 0, totalExpense).toStringAsFixed(1) + '%',
                                       radius: 60,
                                       titleStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                                     ),
                                     PieChartSectionData(
-                                      value: 20,
+                                      value: CustomUtilityfucntion.calculatePercentage(categoryData["Entertainment"] ?? 0, totalExpense),
                                       color: Colors.orange,
-                                      title: '20%',
+                                      title: CustomUtilityfucntion.calculatePercentage(categoryData["Entertainment"] ?? 0, totalExpense).toStringAsFixed(1) + '%',
                                       radius: 60,
                                       titleStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                                     ),
                                     PieChartSectionData(
-                                      value: 10,
+                                      value: CustomUtilityfucntion.calculatePercentage(categoryData["Transport"] ?? 0, totalExpense),
                                       color: Colors.red,
-                                      title: '10%',
+                                      title: CustomUtilityfucntion.calculatePercentage(categoryData["Transport"] ?? 0, totalExpense).toStringAsFixed(1) + '%',
+                                      radius: 60,
+                                      titleStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                                    ),
+                                    PieChartSectionData(
+                                      value: CustomUtilityfucntion.calculatePercentage(categoryData["Bills"] ?? 0, totalExpense),
+                                      color: Colors.purple,
+                                      title: CustomUtilityfucntion.calculatePercentage(categoryData["Bills"] ?? 0, totalExpense).toStringAsFixed(1) + '%',
                                       radius: 60,
                                       titleStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                                     ),
@@ -194,7 +139,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               SizedBox(
                                 child: Row(
                                   children: [
-                                    Container(width: 14, height: 14, color: Colors.orange),
+                                    Container(width: 14, height: 14, color: Colors.red),
                                     SizedBox(width: 8),
                                     Text("Transport", style: TextStyle(fontSize: 16)),
                                   ],
@@ -203,9 +148,18 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               SizedBox(
                                 child: Row(
                                   children: [
-                                    Container(width: 14, height: 14, color: Colors.red),
+                                    Container(width: 14, height: 14, color: Colors.orange),
                                     SizedBox(width: 8),
                                     Text("Entertainment", style: TextStyle(fontSize: 16)),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                child: Row(
+                                  children: [
+                                    Container(width: 14, height: 14, color: Colors.purple),
+                                    SizedBox(width: 8),
+                                    Text("Bills", style: TextStyle(fontSize: 16)),
                                   ],
                                 ),
                               )
@@ -229,12 +183,13 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               SizedBox(height: 10),
               Container(
               child: Column(
-                children: [
-                  CatagoryBreakDownCard(categoryName: "Dinning", amount: "400.00", icon: ColoredIcon.burger(size: 25)),
-                  CatagoryBreakDownCard(categoryName: "Groceries", amount: "300.00", icon: ColoredIcon.shoppingCart1(size: 25)),
-                  CatagoryBreakDownCard(categoryName: "Transport", amount: "200.00", icon: ColoredIcon.carTaxi(size: 25)),
-                  CatagoryBreakDownCard(categoryName: "Entertainment", amount: "150.00", icon: ColoredIcon.filmRoll1(size: 25)),
-                ],
+                children: categoryData.entries.map((entry) {
+                  return CatagoryBreakDownCard(
+                    categoryName: entry.key,
+                    amount: entry.value.toStringAsFixed(2),
+                    icon: CategoryConfig.getIcon(entry.key),
+                  );
+                }).toList(),
               )
               )
             ],
@@ -243,4 +198,5 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       ),
     );
   }
-}// 15:23
+}
+

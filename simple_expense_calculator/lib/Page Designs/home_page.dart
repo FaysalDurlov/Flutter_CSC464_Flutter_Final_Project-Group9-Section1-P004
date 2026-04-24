@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:simple_expense_calculator/Page%20Designs/CustomWidgets/DetailsPage.dart';
+import 'package:my_icon_package/my_icon_package.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_expense_calculator/Page Designs/CustomWidgets/DetailsPage.dart';
+import 'package:intl/intl.dart';
+import 'package:simple_expense_calculator/modelClass/ActivityModelClass.dart';
+import 'package:simple_expense_calculator/utility/CustomStaticUtilityFnc.dart';
+import 'package:simple_expense_calculator/utility/activityManagementProvidor.dart';
 
 class HomePageView extends StatefulWidget {
-
   final Function(int) changeTab;
   const HomePageView({required this.changeTab, super.key});
-
 
   @override
   State<HomePageView> createState() => _HomePageViewState();
@@ -13,27 +17,48 @@ class HomePageView extends StatefulWidget {
 
 class _HomePageViewState extends State<HomePageView> {
 
-  void _showFilterDialog(BuildContext context , {required List<String> itemLists}) {
-    final categories = itemLists;
+  String selectedCategory = "";
+  String selectedSort = "";
+  String searchQuery = "";
 
+  bool get isFilterActive {
+    return selectedCategory.isNotEmpty || selectedSort.isNotEmpty || searchQuery.isNotEmpty;
+  }
+
+  void resetFilters() {
+    setState(() {
+      selectedCategory = "";
+      selectedSort = "";
+      searchQuery = "";
+    });
+  }
+
+
+  void _showFilterDialog(BuildContext context, {required List<String> itemLists, required String type}) {
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
-          insetPadding: EdgeInsets.symmetric(horizontal: 40),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 40),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: categories.length,
+            itemCount: itemLists.length,
             itemBuilder: (context, index) {
               return ListTile(
-                title: Text(categories[index]),
-                onTap: () {
-                  Navigator.pop(context);
-                  print("Selected: ${categories[index]}");
-                },
+                title: Text(itemLists[index]),
+               onTap: () {
+                setState(() {
+                  if (type == "category") {
+                    selectedCategory = itemLists[index];
+                  } else if (type == "sort") {
+                    selectedSort = itemLists[index];
+                  }
+                });
+                Navigator.pop(context);
+              },
               );
             },
           ),
@@ -42,14 +67,52 @@ class _HomePageViewState extends State<HomePageView> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    final activityProvider = Provider.of<ActivityManagementProvider>(context, listen: false);
+
+    activityProvider.loadActivitiesFromFirebase();
+  }
+
+
+  Widget _iconButton(IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF4F6FB),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Icon(icon, color: Colors.grey),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+
+
+    final activityList = context.watch<ActivityManagementProvider>().firebaseFetchedActivities;
+    final totalExpense = CustomUtilityfucntion.getTotalExpense(activityList);
+
+    List<ActivityModelClass> filteredList = activityList;
+
+    filteredList = CustomUtilityfucntion.filterByCategory(filteredList, selectedCategory);
+    filteredList = CustomUtilityfucntion.searchByName(filteredList, searchQuery);
+    filteredList = CustomUtilityfucntion.sortActivities(filteredList, selectedSort);
+    
+
+
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Color.fromARGB(255, 189, 216, 245),
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Simple Expense Calculator',
           style: TextStyle(
             color: Colors.black,
@@ -57,15 +120,23 @@ class _HomePageViewState extends State<HomePageView> {
             fontWeight: FontWeight.w500,
           ),
         ),
+        actions: [
+          if (isFilterActive)
+            IconButton(
+              icon: const Icon(Icons.refresh, color: Colors.black),
+              onPressed: resetFilters,
+            ),
+        ],
       ),
 
       body: Column(
         children: [
-          //Top Header
+
+          // header
           Container(
             width: double.infinity,
-            padding: EdgeInsets.only(top: 20, bottom: 30),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.only(top: 20, bottom: 30),
+            decoration: const BoxDecoration(
               color: Color.fromARGB(255, 189, 216, 245),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(25),
@@ -80,7 +151,7 @@ class _HomePageViewState extends State<HomePageView> {
                 ),
                 SizedBox(height: 5),
                 Text(
-                  "\$1,250.75",
+                  "৳  ${totalExpense.toStringAsFixed(2)}",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 30,
@@ -91,22 +162,24 @@ class _HomePageViewState extends State<HomePageView> {
             ),
           ),
 
-          //Search Bar
+          // search and filter
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               children: [
                 Expanded(
                   child: Container(
                     height: 50,
-                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
                     decoration: BoxDecoration(
-                      color: Color(0xFFF4F6FB),
+                      color: const Color(0xFFF4F6FB),
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: TextField(
                       onChanged: (value) {
-                        print(value);
+                        setState(() {
+                          searchQuery = value;
+                        });
                       },
                       decoration: InputDecoration(
                         icon: Icon(Icons.search, color: Colors.grey),
@@ -116,50 +189,33 @@ class _HomePageViewState extends State<HomePageView> {
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
-                InkWell(
-                  onTap: (){
-                    print("Filter By Category");
-                    _showFilterDialog(context, 
-                    itemLists: ["Bills", "Dining", "Transport", "Groceries", "Entertainment"]);
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF4F6FB),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Icon(Icons.filter_list, color: Colors.grey),
-                  ),
-                ),
-                SizedBox(width: 10),
-                InkWell(
-                  onTap: () {
-                    print("Filter By Date and Amount");
-                    _showFilterDialog(context, 
-                    itemLists: ["By Date (Oldest to Newest)", "By Date (Newest to Oldest)", "By Amount (Low to High)", "By Amount (High to Low)"]);
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF4F6FB),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Icon(Icons.swap_vert, color: Colors.grey),
-                  ),
-                ),
+                const SizedBox(width: 10),
+
+                _iconButton(Icons.filter_list, () {
+                  _showFilterDialog(context, itemLists: ["Bills", "Dining", "Transport", "Groceries", "Entertainment"],type: "category");
+                }),
+
+                const SizedBox(width: 10),
+
+                _iconButton(Icons.swap_vert, () {
+                  _showFilterDialog(context,itemLists: [
+                                            "By Date (Oldest to Newest)",
+                                            "By Date (Newest to Oldest)",
+                                            "By Amount (Low to High)",
+                                            "By Amount (High to Low)"
+                                          ],type: "sort");
+                }),
               ],
             ),
           ),
 
-          // Expense List
+          // lsit to create entries
           Expanded(
             child: ListView.builder(
-              itemCount: 5,
+              padding: const EdgeInsets.only(bottom: 80),
+              itemCount: filteredList.length,
               itemBuilder: (context, index) {
-                return expenseItem(context);
+                return expenseItem(context, activity: filteredList[index] , icon: CategoryConfig.getIcon(filteredList[index].category));
               },
             ),
           ),
@@ -168,14 +224,13 @@ class _HomePageViewState extends State<HomePageView> {
 
       floatingActionButton: FloatingActionButton.extended(
         foregroundColor: Colors.white,
-        backgroundColor: Color.fromARGB(255, 30, 109, 170),
+        backgroundColor: const Color.fromARGB(255, 30, 109, 170),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(60)),
         onPressed: () {
           print("Add Expense button pressed");
           widget.changeTab(1);
         },
-        tooltip: 'Add Expense',
-        icon: Icon(Icons.add),
+        icon: const Icon(Icons.add),
         label: const Text(
           'Add Expense',
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
@@ -184,43 +239,42 @@ class _HomePageViewState extends State<HomePageView> {
     );
   }
 
-  Widget expenseItem(BuildContext context) {
+  Widget expenseItem(BuildContext context, {required ColoredIcon icon, required ActivityModelClass activity}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Dismissible(
         key: UniqueKey(),
-        direction:
-            DismissDirection.endToStart, // the Swipe Direction (Right to Left)
-        // Delete Background RED
+        direction: DismissDirection.endToStart,
         background: Container(
-          padding: EdgeInsets.only(right: 20),
+          padding: const EdgeInsets.only(right: 20),
           alignment: Alignment.centerRight,
           decoration: BoxDecoration(
             color: Colors.red,
             borderRadius: BorderRadius.circular(15),
           ),
-          child: Icon(Icons.delete, color: Colors.white),
+          child: const Icon(Icons.delete, color: Colors.white),
         ),
-
         onDismissed: (direction) {
-          print("Deleted");
+            final provider = context.read<ActivityManagementProvider>();
+            provider.deleteActivity(activity.id);
         },
 
         child: GestureDetector(
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => ExpenseDetailsPage(changeTab: widget.changeTab)),
+              MaterialPageRoute(
+                builder: (_) => ExpenseDetailsPage( activity: activity, changeTab: widget.changeTab),
+              ),
             );
           },
 
-          // Card UI for each expense item
           child: Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black12,
                   blurRadius: 5,
@@ -230,36 +284,36 @@ class _HomePageViewState extends State<HomePageView> {
             ),
             child: Row(
               children: [
-                // Icon Box
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.orange.shade100,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(Icons.fastfood, color: Colors.orange),
+                  child: icon,
                 ),
 
-                SizedBox(width: 15),
+                const SizedBox(width: 15),
 
-                // Text Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Lunch @ Cafe",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        activity.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text("15 Oct 2023", style: TextStyle(color: Colors.grey)),
+                      Text(
+                        DateFormat('dd MMM, yyyy').format(activity.date),
+                        style: const TextStyle(color: Colors.grey),
+                      ),
                     ],
                   ),
                 ),
 
-                // Amount
                 Text(
-                  "-\$32.50",
-                  style: TextStyle(
+                  "৳ ${activity.amount}",
+                  style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
@@ -272,4 +326,3 @@ class _HomePageViewState extends State<HomePageView> {
     );
   }
 }
-//Home_page_created
