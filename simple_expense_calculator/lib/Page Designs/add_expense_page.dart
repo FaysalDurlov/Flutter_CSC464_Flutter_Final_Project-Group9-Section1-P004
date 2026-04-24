@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_expense_calculator/modelClass/ActivityModelClass.dart';
+import 'package:simple_expense_calculator/utility/activityManagementProvidor.dart';
 
 class AddExpensePage extends StatefulWidget {
   final Function(int) changeTab;
@@ -11,6 +13,7 @@ class AddExpensePage extends StatefulWidget {
 
 class _AddExpensePageState extends State<AddExpensePage> {
 
+  late ActivityManagementProvider activityProvider;
 
   TextEditingController activityNameController = TextEditingController();
   TextEditingController activityAmountController = TextEditingController();
@@ -20,6 +23,12 @@ class _AddExpensePageState extends State<AddExpensePage> {
 
 
 
+  @override
+  void initState() {
+    super.initState();
+
+    activityProvider = Provider.of<ActivityManagementProvider>(context, listen: false);
+  }
 
 
   Future<void> pickDate() async {
@@ -232,8 +241,12 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         date: selectedDate ?? DateTime.now(),
                         createdAt: DateTime.now(),
                       );
+
+
+
+
                       print(newActivity.toJson());
-                      widget.changeTab(0);
+                      // widget.changeTab(0);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 30, 109, 170),
