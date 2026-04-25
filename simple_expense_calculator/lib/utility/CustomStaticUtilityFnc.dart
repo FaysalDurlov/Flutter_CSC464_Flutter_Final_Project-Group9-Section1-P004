@@ -31,7 +31,7 @@ class CustomUtilityfucntion {
   }
 
 
-  // 🔍 1. FILTER BY CATEGORY
+  // FILTER BY CATEGORY
   static List<ActivityModelClass> filterByCategory(List<ActivityModelClass> list, String category) {
     if (category.isEmpty) return list;
     return list.where((item) => item.category == category).toList();
@@ -40,7 +40,7 @@ class CustomUtilityfucntion {
 
 
 
-  // 🔎 2. SEARCH BY NAME
+  // SEARCH BY NAME
   static List<ActivityModelClass> searchByName(List<ActivityModelClass> list, String query) {
 
     if (query.isEmpty) return list;
@@ -48,7 +48,7 @@ class CustomUtilityfucntion {
 
   }
   
-  // 🔃 3. SORT FUNCTION
+  //  SORT FUNCTION
   static List<ActivityModelClass> sortActivities(List<ActivityModelClass> list, String sortType) {
 
     List<ActivityModelClass> sortedList = List.from(list);

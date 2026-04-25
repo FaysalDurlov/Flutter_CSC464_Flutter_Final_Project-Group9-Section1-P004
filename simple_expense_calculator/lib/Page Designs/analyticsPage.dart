@@ -123,7 +123,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                   children: [
                                     Container(width: 14, height: 14, color: Colors.blue),
                                     SizedBox(width: 8),
-                                    Text("Dinning", style: TextStyle(fontSize: 16)),
+                                    Text("Dining", style: TextStyle(fontSize: 16)),
                                   ],
                                 ),
                               ),

@@ -26,13 +26,14 @@ class _MainPageState extends State<MainPage> {
     final List<Widget> pages = [
       HomePageView(changeTab: changeTab),
       AddExpensePage(changeTab: changeTab),
-      AnalyticsPage(), // placeholder
+      AnalyticsPage()
     ];
     return Scaffold(
       body: pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: changeTab,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
